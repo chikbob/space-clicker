@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import {computed} from 'vue'
 
 // Получаем пропсы
 const props = defineProps({
@@ -39,45 +39,61 @@ const canAfford = computed(() => {
 </script>
 
 <style scoped lang="scss">
+$breakpoints: (
+    sm: 480px,
+    md: 768px,
+    lg: 1024px
+);
+
+@mixin respond-above($breakpoint) {
+  @media (min-width: map-get($breakpoints, $breakpoint)) {
+    @content;
+  }
+}
+
 .upgrade-card {
   background-color: #2d2d2d;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  box-sizing: border-box;
 
   &__info {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 
   &__title {
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
     font-weight: bold;
     color: #ffffff;
+    word-break: break-word;
   }
 
   &__description {
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
     color: #b3b3b3;
   }
 
   &__action {
-    margin-top: 16px;
+    margin-top: 10px;
   }
 
   &__button {
     width: 100%;
     background-color: #4caf50;
     color: #ffffff;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: clamp(0.85rem, 3vw, 1rem);
     font-weight: bold;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
       background-color: #45a049;

@@ -48,6 +48,7 @@
 
 <script setup>
 import {ref, computed, onMounted, watch} from 'vue';
+import {defineStore} from 'pinia'
 import UpgradeCard from './UpgradeCard.vue';
 
 const score = ref(0);
@@ -161,139 +162,122 @@ const visiblePassiveUpgrades = computed(() => {
 </script>
 
 <style scoped lang="scss">
-.page__container {
-  background-color: #1e1e2f; /* Темний фон */
-  color: #ffffff; /* Білий текст */
-  padding: 10px 6px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+$page-breakpoints: (
+    sm: 480px,
+    md: 768px,
+    lg: 1024px,
+    xl: 1280px
+);
 
-.page__header {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.page__title {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.page__score {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.page__button {
-  background-color: #9b4dca; /* Фіолетовий */
-  color: #ffffff; /* Білий текст */
-  padding: 20px 40px;
-  border-radius: 20px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #6a2c9f; /* Фіолетовий при наведенні */
+@mixin respond-above($breakpoint) {
+  @media (min-width: map-get($page-breakpoints, $breakpoint)) {
+    @content;
   }
 }
 
-.page__content {
-  display: flex;
-  flex-direction: row;
-  align-items: start;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  @media(max-width: 768px) {
+.page {
+  &__container {
+    background-color: #1e1e2f;
+    color: #ffffff;
+    padding: 16px;
+    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.page__section {
-  flex: 1;
-  margin: 50px 0 0 0;
-  width: 600px; /* Ширина по замовчуванню */
-  padding: 20px 40px;
-  background-color: #33333d; /* Темно-сірий */
-  border-radius: 16px;
-
-  @media(max-width: 768px) {
-    width: 100%; /* Ширина 100% для телефонів */
-    padding: 10px; /* Зменшення відступів на маленьких екранах */
-  }
-}
-
-.page__section-title {
-  font-size: 2rem;
-  font-weight: 600;
-  border-bottom: 2px solid;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-
-  &--active {
-    color: #9b4dca; /* Фіолетовий */
-    border-color: #9b4dca; /* Фіолетовий */
+    min-height: 100vh;
+    box-sizing: border-box;
   }
 
-  &--passive {
-    color: #3b8bbd; /* Синій */
-    border-color: #3b8bbd; /* Синій */
+  &__header {
+    text-align: center;
+    margin-bottom: 20px;
   }
-}
-
-.page__upgrades {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-// Стилі для компонента UpgradeCard
-.upgrade-card {
-  background-color: #33333d; /* Темно-сірий */
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
 
   &__title {
-    font-size: 1.25rem;
+    font-size: clamp(1.6rem, 5vw, 3rem);
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
+    word-wrap: break-word;
   }
 
-  &__description {
-    font-size: 1rem;
-    color: #a9a9a9; /* Світло-сірий */
+  &__score {
+    font-size: clamp(1.1rem, 4vw, 2rem);
+    font-weight: 600;
     margin-bottom: 16px;
   }
 
   &__button {
-    background-color: #4caf50; /* Зелений */
-    color: #ffffff; /* Білий текст */
-    padding: 12px;
-    border-radius: 8px;
-    width: 100%;
+    background-color: #9b4dca;
+    color: #ffffff;
+    padding: 14px 28px;
+    border-radius: 16px;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-weight: bold;
     transition: background-color 0.3s ease;
+    margin: 0 auto 24px;
+    max-width: 90%;
+    width: 100%;
 
-    &:disabled {
-      background-color: #b0b0b0; /* Сірий для вимкнених */
+    @include respond-above(md) {
+      width: 280px;
     }
 
     &:hover {
-      background-color: #45a049; /* Зелений при наведенні */
+      background-color: #6a2c9f;
     }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+
+    @include respond-above(md) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+
+  &__section {
+    background-color: #33333d;
+    border-radius: 16px;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+
+    @include respond-above(sm) {
+      flex: 1 1 320px;
+      max-width: 500px;
+    }
+  }
+
+  &__section-title {
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    font-weight: 600;
+    border-bottom: 2px solid;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    text-align: center;
+
+    &--active {
+      color: #9b4dca;
+      border-color: #9b4dca;
+    }
+
+    &--passive {
+      color: #3b8bbd;
+      border-color: #3b8bbd;
+    }
+  }
+
+  &__upgrades {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
 }
 </style>
